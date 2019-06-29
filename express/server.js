@@ -1,31 +1,22 @@
-var express = require('express');
 
-var app = express();
+const express=require('express');
+const mongoose=require('mongoose');
+const dotenv=require('dotenv')
+dotenv.config()
+mongoose.connect(process.env.MONGO_URI).then(function(data){
+    console.log('db connected')
+});
 
-// HTTP GET /
-app.get('/', function(req, res){
-    res.json({'message' : 'message from / request'});
+const app=express();
+const appmodule = require("./module"); 
+
+app.get('/calling', appmodule.getData);
+
+app.get('/',(req,res)=>{
+    res.send('hello i am in a express mode');
 })
-
-// HTTP GET /getcountries
-app.get('/getcountries', function(req, res){
-    var object = [
-        {
-            name : 'INDIA',
-            cap : 'Delhi'
-        },
-        {
-            name : 'INDIA',
-            cap : 'Delhi'
-        },
-        {
-            name : 'INDIA',
-            cap : 'Delhi'
-        }
-    ]
-    res.json(object);
-})
-
-app.listen(4000, function(){
-    console.log('server started on PORT 4000');
+app.post('/', appmodule.postData);
+ const port=process.env.PORT || 8080;
+app.listen(port, function(){
+    console.log('server started ...')
 });
